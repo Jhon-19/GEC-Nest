@@ -1,0 +1,11 @@
+application:
+  port: 3000
+
+db:
+  username: Jhony
+  password: H4ShIFTMJzBECkJF
+  cluster: gec-users
+
+jwt:
+  secret: gec20240109
+  expiresIn: 3h
