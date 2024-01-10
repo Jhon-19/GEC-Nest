@@ -11,7 +11,6 @@ import {
 import { IUserPayload } from './models/payload.model';
 import { AuthGuard } from '@nestjs/passport';
 import { UserPayload } from 'src/decorators/user-payload/user-payload.decorator';
-import { AuthPlusGuard } from 'src/guards/auth/auth.guard';
 import { SkipAuth } from 'src/decorators/skip-auth/skip-auth.decorator';
 
 @SkipAuth()

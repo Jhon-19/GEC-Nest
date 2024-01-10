@@ -1,3 +1,4 @@
+import { TransformInterceptor } from './interceptors/transform/transform.interceptor';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AppConfigService } from './shared/services/app-config.service';
@@ -9,6 +10,7 @@ import {
 import { AuthPlusGuard } from './guards/auth/auth.guard';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
+import { BaseExceptionFilter } from './filters/base/base.filter';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +18,10 @@ export async function bootstrap() {
   const configService = app.get(AppConfigService);
 
   const reflector = app.get(Reflector);
+
+  app.useGlobalFilters(new BaseExceptionFilter(configService));
+
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
   const jwtService = app.select(SharedModule).get(JwtService);
 

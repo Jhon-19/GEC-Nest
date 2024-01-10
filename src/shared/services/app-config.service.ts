@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { JwtModuleOptions } from '@nestjs/jwt';
 import { isNil } from 'lodash';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class AppConfigService {
   constructor(private readonly configService: ConfigService) {}
 
   get nodeEnv(): string {
-    return this.get('NODE_ENV');
+    return this.get('application.env');
   }
 
   get isDevelopment(): boolean {
