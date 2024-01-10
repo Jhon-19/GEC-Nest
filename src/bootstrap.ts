@@ -10,7 +10,7 @@ import {
 import { AuthPlusGuard } from './guards/auth/auth.guard';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
-import { BaseExceptionFilter } from './filters/base/base.filter';
+import { RoleService } from './modules/role/role.service';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,13 +19,14 @@ export async function bootstrap() {
 
   const reflector = app.get(Reflector);
 
-  app.useGlobalFilters(new BaseExceptionFilter(configService));
+  // app.useGlobalFilters(new BaseExceptionFilter(configService));
 
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
   const jwtService = app.select(SharedModule).get(JwtService);
+  const roleService = app.select(SharedModule).get(RoleService);
 
-  app.useGlobalGuards(new AuthPlusGuard(reflector, jwtService));
+  app.useGlobalGuards(new AuthPlusGuard(reflector, jwtService, roleService));
 
   app.useGlobalPipes(
     new ValidationPipe({

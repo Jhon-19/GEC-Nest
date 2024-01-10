@@ -1,3 +1,4 @@
+import { RoleService } from './../../modules/role/role.service';
 import { SKIP_AUTH_DECORATOR_KEY } from './../../decorators/skip-auth/skip-auth.decorator';
 import {
   CanActivate,
@@ -9,12 +10,15 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { isEmpty } from 'class-validator';
+import { Request } from 'express';
+import { IUserPayload } from 'src/modules/auth/models/payload.model';
 
 @Injectable()
 export class AuthPlusGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtService: JwtService,
+    private readonly roleService: RoleService,
   ) {}
 
   canActivate(
@@ -40,16 +44,20 @@ export class AuthPlusGuard implements CanActivate {
     }
 
     try {
-      const authUser = this.jwtService.verify(token);
-
-      // check the jwt payload
-      if (isEmpty(authUser)) {
-        throw new Error('jwt payload is invalid');
-      }
+      request.user = this.jwtService.verify(token);
     } catch {
       throw new UnauthorizedException();
     }
 
-    return true;
+    // check the jwt payload
+    if (isEmpty(request.user)) {
+      throw new Error('jwt payload is invalid');
+    }
+
+    // check authorization
+    const { user, method, path } = request;
+    const { role } = user as IUserPayload;
+    const action = this.roleService.mappingAction(method);
+    return this.roleService.checkPermission(role, path, action);
   }
 }

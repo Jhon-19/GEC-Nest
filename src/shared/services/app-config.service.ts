@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
 import { isNil } from 'lodash';
+import { join } from 'path';
+import { CasbinOptions } from 'src/modules/role/models/option.model';
 
 @Injectable()
 export class AppConfigService {
@@ -35,13 +37,20 @@ export class AppConfigService {
     return { username, password, cluster, uri };
   }
 
-  get jwtConfig(): JwtModuleOptions & { expires?: number } {
+  get jwtConfig(): JwtModuleOptions {
     return {
       secret: this.get('jwt.secret'),
       signOptions: {
         expiresIn: '5m',
       },
     };
+  }
+
+  get casbinConfig(): CasbinOptions {
+    const cwd = process.cwd();
+    const modelPath = join(cwd, this.get('casbin.modelPath'));
+    const policyAdapter = join(cwd, this.get('casbin.policyAdapter'));
+    return { modelPath, policyAdapter };
   }
 
   /**

@@ -35,6 +35,7 @@ export class AuthController {
     const payload: IUserPayload = {
       id: user._id,
       username: user.username,
+      role: user.role,
     };
 
     return this.jwtService.sign(payload);

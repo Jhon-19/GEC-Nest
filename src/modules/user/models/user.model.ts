@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { isEmail } from 'class-validator';
 import { Document } from 'mongoose';
+import { Role } from '../types/role.type';
 
 export const USERNAME_MIN_LENGTH = 2;
 export const USERNAME_MAX_LENGTH = 10;
@@ -26,6 +27,13 @@ export class User {
     required: true,
   })
   password: string;
+
+  @Prop({
+    enum: Object.values(Role),
+    default: Role.STAFF,
+    required: true,
+  })
+  role: Role;
 }
 
 export const UserSchama = SchemaFactory.createForClass(User);

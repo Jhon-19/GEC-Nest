@@ -1,0 +1,7 @@
+p, admin, /resources/resource, *
+p, staff, /resources/resource, read
+p, manager, /resources/resource, create
+p, manager, /resources/resource, update
+p, manager, /resources/resource, delete
+
+g, manager, staff

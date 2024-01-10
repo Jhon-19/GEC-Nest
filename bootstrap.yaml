@@ -10,3 +10,7 @@ db:
 jwt:
   secret: gec20240109
   expiresIn: 3h
+
+casbin:
+  modelPath: /src/modules/role/casbin/model.conf
+  policyAdapter: /src/modules/role/casbin/policy.csv
