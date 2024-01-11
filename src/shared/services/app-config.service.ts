@@ -30,11 +30,11 @@ export class AppConfigService {
   get mongoDBConfig() {
     const username = this.get('db.username');
     const password = this.get('db.password');
-    const cluster = this.get('db.cluster');
     const encodedPassword = encodeURIComponent(password);
-    const uri = `mongodb+srv://${username}:${encodedPassword}@${cluster}.k4wtyju.mongodb.net/?retryWrites=true&w=majority`;
+    const name = this.get('db.name');
+    const uri = `mongodb://${username}:${encodedPassword}@127.0.0.1:27017/${name}`;
 
-    return { username, password, cluster, uri };
+    return { username, password, uri };
   }
 
   get jwtConfig(): JwtModuleOptions {

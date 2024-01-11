@@ -4,8 +4,8 @@ application:
 
 db:
   username: Jhony
-  password: H4ShIFTMJzBECkJF
-  cluster: gec-users
+  password: zl08252000
+  name: gec
 
 jwt:
   secret: gec20240109
