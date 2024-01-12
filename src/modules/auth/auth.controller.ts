@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from '../user/dtos/create-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from './../user/user.service';
 import {
   BadRequestException,
