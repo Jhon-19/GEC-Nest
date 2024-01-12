@@ -1,4 +1,4 @@
-import { TransformInterceptor } from './interceptors/transform/transform.interceptor';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AppConfigService } from './shared/services/app-config.service';
@@ -7,7 +7,7 @@ import {
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthPlusGuard } from './guards/auth/auth.guard';
+import { AuthPlusGuard } from './guards/auth.guard';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
 import { RoleService } from './modules/role/role.service';

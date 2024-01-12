@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { IUserPayload } from './models/payload.model';
 import { AuthGuard } from '@nestjs/passport';
-import { UserPayload } from 'src/decorators/user-payload/user-payload.decorator';
-import { SkipAuth } from 'src/decorators/skip-auth/skip-auth.decorator';
+import { UserPayload } from 'src/decorators/user-payload.decorator';
+import { SkipAuth } from 'src/decorators/skip-auth.decorator';
 
 @SkipAuth()
 @Controller('auth')

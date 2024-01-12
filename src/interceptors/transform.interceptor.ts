@@ -1,4 +1,4 @@
-import { SKIP_TRANSFORM_DECORATOR_KEY } from './../../decorators/skip-transform/skip-transform.decorator';
+import { SKIP_TRANSFORM_DECORATOR_KEY } from '../decorators/skip-transform.decorator';
 import {
   CallHandler,
   ExecutionContext,

@@ -1,5 +1,5 @@
-import { RoleService } from './../../modules/role/role.service';
-import { SKIP_AUTH_DECORATOR_KEY } from './../../decorators/skip-auth/skip-auth.decorator';
+import { RoleService } from '../modules/role/role.service';
+import { SKIP_AUTH_DECORATOR_KEY } from '../decorators/skip-auth.decorator';
 import {
   CanActivate,
   ExecutionContext,
