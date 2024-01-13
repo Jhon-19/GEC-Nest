@@ -8,6 +8,7 @@ import configuration from './configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppConfigService } from './shared/services/app-config.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { ResourceModule } from './modules/resource/resource.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './modules/auth/auth.module';
     SharedModule,
     AuthModule,
     UserModule,
+    ResourceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

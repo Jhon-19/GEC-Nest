@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { AppConfigService } from './shared/services/app-config.service';
 import {
   HttpStatus,
+  MethodNotAllowedException,
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
@@ -11,6 +12,11 @@ import { AuthPlusGuard } from './guards/auth.guard';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
 import { RoleService } from './modules/role/role.service';
+import {
+  createFolder,
+  createStaticFolder,
+} from './modules/resource/utils/file.util';
+import { STATIC_PATH } from './constants/resources';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -44,6 +50,8 @@ export async function bootstrap() {
         ),
     }),
   );
+
+  await createStaticFolder();
 
   const { port } = configService.appConfig;
 

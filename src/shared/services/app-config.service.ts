@@ -1,12 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
 import { isNil } from 'lodash';
 import { join } from 'path';
+import { ResourcesOptions } from 'src/modules/resource/models/option.model';
+import {
+  createFolder,
+  parseFileSize,
+} from 'src/modules/resource/utils/file.util';
 import { CasbinOptions } from 'src/modules/role/models/option.model';
 
 @Injectable()
 export class AppConfigService {
+  private cwd = process.cwd();
+
   constructor(private readonly configService: ConfigService) {}
 
   get nodeEnv(): string {
@@ -47,10 +54,21 @@ export class AppConfigService {
   }
 
   get casbinConfig(): CasbinOptions {
-    const cwd = process.cwd();
-    const modelPath = join(cwd, this.get('casbin.modelPath'));
-    const policyAdapter = join(cwd, this.get('casbin.policyAdapter'));
+    const basePath = this.get('casbin.basePath');
+    const modelPath = join(this.cwd, basePath, this.get('casbin.modelPath'));
+    const policyAdapter = join(
+      this.cwd,
+      basePath,
+      this.get('casbin.policyAdapter'),
+    );
     return { modelPath, policyAdapter };
+  }
+
+  get resourcesConfig(): ResourcesOptions {
+    const defaultFolder = this.get('resources.defaultFolder');
+    const fileSizeStr = this.get('resources.fileSize');
+    const fileSize = parseFileSize(fileSizeStr);
+    return { defaultFolder, fileSize };
   }
 
   /**

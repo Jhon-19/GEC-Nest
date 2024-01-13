@@ -12,5 +12,11 @@ jwt:
   expiresIn: 3h
 
 casbin:
-  modelPath: /src/modules/role/casbin/model.conf
-  policyAdapter: /src/modules/role/casbin/policy.csv
+  basePath: /src/modules/role/casbin
+  modelPath: /model.conf
+  policyAdapter: /policy.csv
+
+resources:
+  staticPath: /static
+  defaultFolder: resources
+  fileSize: 100M
