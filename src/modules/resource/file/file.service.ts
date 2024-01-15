@@ -1,47 +1,58 @@
+import { merge } from 'lodash';
 import {
-  Inject,
   Injectable,
+  NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import { DeleteFileDto } from './dto/delete-file.dto';
+import { FileDto } from './dto/file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import * as fs from 'node:fs/promises';
-import { checkFolder, createFolder, renameFile } from '../utils/file.util';
+import { parseOriginalFileName, renameFile } from '../utils/file.util';
 import { join } from 'node:path';
-import { STATIC_PATH } from 'src/constants/resources';
+import { FOLDER } from 'src/constants/resources';
+import { FILE } from 'node:dns';
+import { EMFile } from '../types/file.type';
+import { checkFolder, getFolderPath } from '../utils/folder.util';
+import { existsFileOrFolder } from '../utils/resource.util';
 
 @Injectable()
 export class FileService {
-  private serviceUnavailableException = new ServiceUnavailableException(
-    '请求无效',
-  );
-  private staticPath = STATIC_PATH;
-
-  private getFolderPath(folder) {
-    if (!checkFolder(folder)) {
-      throw this.serviceUnavailableException;
-    }
-    return join(this.staticPath, folder);
+  private getFullFileName(fileName, prefix) {
+    return prefix ? `${prefix}-${fileName}` : fileName;
   }
 
-  async create(folder, files) {
-    const folderPath = this.getFolderPath(folder);
+  private getFilePath(fileDto: FileDto) {
+    const { folder, fileName, prefix } = fileDto;
+    const folderPath = getFolderPath(folder);
+    const fullFileName = this.getFullFileName(fileName, prefix);
+    const filePath = join(folderPath, fullFileName);
+    return { filePath, fullFileName };
+  }
 
-    let existsFolder = await createFolder(folderPath);
+  private getRenamedFilePath(folderPath, fileName) {
+    const fileNameRenamed = renameFile(fileName);
+    const filePath = join(folderPath, fileNameRenamed);
+    return filePath;
+  }
 
-    if (!existsFolder) {
-      throw this.serviceUnavailableException;
+  async create(folder: string, files: Array<EMFile>) {
+    const folderPath = getFolderPath(folder);
+
+    const isExist = await existsFileOrFolder(folderPath, FOLDER);
+
+    if (!isExist) {
+      throw new ServiceUnavailableException('文件夹不存在');
     }
+
     files.forEach(async (file) => await this.createOne(folderPath, file));
-    return `files in ${folder} is created.`;
+    return `${files.length} files in ${folder} is created.`;
   }
 
   async createOne(folderPath, file: EMFile) {
     const fileName = file.originalname;
     const fileData = file.buffer;
 
-    const newFileName = renameFile(fileName);
-    const filePath = join(folderPath, newFileName);
+    const filePath = this.getRenamedFilePath(folderPath, fileName);
 
     try {
       await fs.writeFile(filePath, fileData);
@@ -50,12 +61,8 @@ export class FileService {
     }
   }
 
-  async remove(deleteFileDto: DeleteFileDto) {
-    const { folder, fileName, prefix } = deleteFileDto;
-    const folderPath = this.getFolderPath(folder);
-    const filePath = prefix
-      ? join(folderPath, `${prefix}-${fileName}`)
-      : join(folderPath, fileName);
+  async remove(fileDto: FileDto) {
+    const { filePath } = this.getFilePath(fileDto);
 
     try {
       await fs.unlink(filePath);
@@ -63,18 +70,61 @@ export class FileService {
       throw new ServiceUnavailableException(err.message);
     }
 
-    return `${fileName} in ${folder} is removed.`;
+    return `${fileDto.fileName} in ${fileDto.folder} is removed.`;
   }
 
-  findAll() {
-    return `This action returns all file`;
+  async findAllInFolder(folder: string) {
+    const folderPath = getFolderPath(folder);
+    let isExist = existsFileOrFolder(folderPath, FOLDER);
+    let files = [];
+    if (isExist) {
+      try {
+        files = await fs.readdir(folderPath);
+      } catch (err) {
+        throw new ServiceUnavailableException(err.message);
+      }
+    }
+    return files;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
+  async download(fileDto: FileDto) {
+    const { filePath, fullFileName } = this.getFilePath(fileDto);
+    let isExist = await existsFileOrFolder(filePath, FILE);
+    if (!isExist) {
+      throw new NotFoundException('文件不存在');
+    }
+    let originalFileName = parseOriginalFileName(fullFileName);
+    return { filePath, originalFileName };
   }
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
+  async update(updateFileDto: UpdateFileDto) {
+    const { folder, fileName, prefix, newFolder, newFileName } = updateFileDto;
+    const { filePath: oldFilePath, fullFileName } = this.getFilePath({
+      folder,
+      fileName,
+      prefix,
+    });
+    const originalFileName = parseOriginalFileName(fullFileName);
+
+    let newFolderPath = getFolderPath(folder);
+    if (newFolder && checkFolder(newFolder)) {
+      newFolderPath = getFolderPath(newFolder);
+    }
+
+    let newOriginalFileName = newFileName ?? originalFileName;
+    let newFilePath = this.getRenamedFilePath(
+      newFolderPath,
+      newOriginalFileName,
+    );
+
+    try {
+      await fs.rename(oldFilePath, newFilePath);
+    } catch (err) {
+      throw new ServiceUnavailableException(err.message);
+    }
+
+    return `${originalFileName} in ${folder} is moved to ${newOriginalFileName} in ${
+      newFolder ?? folder
+    }.`;
   }
 }

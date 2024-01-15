@@ -8,13 +8,17 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  Query,
+  Res,
 } from '@nestjs/common';
 import { FileService } from './file.service';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { SkipAuth } from 'src/decorators/skip-auth.decorator';
 import { AppConfigService } from 'src/shared/services/app-config.service';
-import { DeleteFileDto } from './dto/delete-file.dto';
+import { FileDto } from './dto/file.dto';
+import { Response, response } from 'express';
+import { EMFile } from '../types/file.type';
 
 @SkipAuth()
 @Controller('file')
@@ -26,39 +30,46 @@ export class FileController {
 
   @Post(':folder')
   @UseInterceptors(FilesInterceptor('files'))
-  async create(
+  create(
     @UploadedFiles() files: Array<EMFile>,
     @Param('folder') folder: string,
   ) {
-    return await this.fileService.create(folder, files);
+    return this.fileService.create(folder, files);
   }
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
-  async createDefault(@UploadedFiles() files: Array<EMFile>) {
-    return await this.create(
-      files,
-      this.configService.resourcesConfig.defaultFolder,
-    );
+  createDefault(@UploadedFiles() files: Array<EMFile>) {
+    return this.create(files, this.configService.resourcesConfig.defaultFolder);
   }
 
   @Delete()
-  remove(@Body() deleteFile: DeleteFileDto) {
+  remove(@Body() deleteFile: FileDto) {
     return this.fileService.remove(deleteFile);
   }
 
-  @Get()
-  findAll() {
-    return this.fileService.findAll();
+  @Get(':folder')
+  findAllInFolder(@Param('folder') folder: string) {
+    return this.fileService.findAllInFolder(folder);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fileService.findOne(+id);
+  @Get(':folder/download')
+  async download(
+    @Res() res: Response,
+    @Param('folder') folder: string,
+    @Query('fileName') fileName: string,
+    @Query('prefix') prefix?: string,
+  ) {
+    const { filePath, originalFileName } = await this.fileService.download({
+      folder,
+      fileName,
+      prefix,
+    });
+    res.download(filePath, originalFileName);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    return this.fileService.update(+id, updateFileDto);
+  @Patch()
+  update(@Body() updateFileDto: UpdateFileDto) {
+    return this.fileService.update(updateFileDto);
   }
 }

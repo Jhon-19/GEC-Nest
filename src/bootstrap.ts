@@ -12,11 +12,7 @@ import { AuthPlusGuard } from './guards/auth.guard';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
 import { RoleService } from './modules/role/role.service';
-import {
-  createFolder,
-  createStaticFolder,
-} from './modules/resource/utils/file.util';
-import { STATIC_PATH } from './constants/resources';
+import { createStaticFolder } from './modules/resource/utils/folder.util';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);

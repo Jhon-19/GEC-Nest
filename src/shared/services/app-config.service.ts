@@ -4,10 +4,7 @@ import { JwtModuleOptions } from '@nestjs/jwt';
 import { isNil } from 'lodash';
 import { join } from 'path';
 import { ResourcesOptions } from 'src/modules/resource/models/option.model';
-import {
-  createFolder,
-  parseFileSize,
-} from 'src/modules/resource/utils/file.util';
+import { parseFileSize } from 'src/modules/resource/utils/file.util';
 import { CasbinOptions } from 'src/modules/role/models/option.model';
 
 @Injectable()
