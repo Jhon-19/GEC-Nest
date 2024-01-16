@@ -17,7 +17,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { SkipAuth } from 'src/decorators/skip-auth.decorator';
 import { AppConfigService } from 'src/shared/services/app-config.service';
 import { FileDto } from './dto/file.dto';
-import { Response, response } from 'express';
+import { Response } from 'express';
 import { EMFile } from '../types/file.type';
 
 @SkipAuth()

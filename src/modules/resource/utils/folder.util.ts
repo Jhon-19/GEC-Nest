@@ -37,3 +37,15 @@ export async function createFolder(folderPath: string) {
     }
   }
 }
+
+export async function getAllFolders() {
+  const files = await fs.readdir(STATIC_PATH);
+  const folders = [];
+  for (let file of files) {
+    let stat = await fs.stat(getFolderPath(file));
+    if (stat.isDirectory) {
+      folders.push(file);
+    }
+  }
+  return folders;
+}

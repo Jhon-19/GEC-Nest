@@ -4,7 +4,6 @@ import { AppModule } from './app.module';
 import { AppConfigService } from './shared/services/app-config.service';
 import {
   HttpStatus,
-  MethodNotAllowedException,
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
