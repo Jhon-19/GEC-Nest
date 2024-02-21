@@ -4,5 +4,6 @@ p, manager, /resources/resource, create
 p, manager, /resources/resource, update
 p, manager, /resources/resource, delete
 p, staff, /, read
+p, staff, /users/*, *
 
 g, manager, staff

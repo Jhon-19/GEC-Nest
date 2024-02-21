@@ -12,6 +12,7 @@ import { IUserPayload } from './models/payload.model';
 import { AuthGuard } from '@nestjs/passport';
 import { UserPayload } from 'src/decorators/user-payload.decorator';
 import { SkipAuth } from 'src/decorators/skip-auth.decorator';
+import { ILoginIn } from './models/login-in.model';
 
 @SkipAuth()
 @Controller('auth')
@@ -44,6 +45,10 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('signin')
   sigin(@UserPayload() user: IUserPayload) {
-    return this.jwtService.sign(user);
+    const loginInResult: ILoginIn = {
+      id: user.id,
+      token: this.jwtService.sign(user),
+    };
+    return loginInResult;
   }
 }
