@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { isEmail } from 'class-validator';
-import { Document } from 'mongoose';
 import { Role } from '../types/role.type';
+import * as mongoose from 'mongoose';
+import { UserInfo } from './user-info.model';
 
 export const USERNAME_MIN_LENGTH = 2;
 export const USERNAME_MAX_LENGTH = 10;
@@ -34,8 +35,14 @@ export class User {
     required: true,
   })
   role: Role;
+
+  @Prop({
+    type: mongoose.Schema.ObjectId,
+    ref: 'UserInfo',
+  })
+  userInfo: UserInfo;
 }
 
 export const UserSchama = SchemaFactory.createForClass(User);
 
-export type UserDocument = User & Document;
+export type UserDocument = User & mongoose.Document;

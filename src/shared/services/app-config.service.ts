@@ -45,7 +45,7 @@ export class AppConfigService {
     return {
       secret: this.get('jwt.secret'),
       signOptions: {
-        expiresIn: '5m',
+        expiresIn: '3h',
       },
     };
   }

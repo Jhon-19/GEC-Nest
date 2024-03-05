@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { ChangeUserInfoDto } from './dto/change-user-info.dto';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SkipAuth } from 'src/decorators/skip-auth.decorator';
@@ -17,5 +18,15 @@ export class UserController {
   @Post('change-password')
   async changePassword(@Body() changePasswordPayload: IChangePasswordPayload) {
     return await this.userService.changePassword(changePasswordPayload);
+  }
+
+  @Post('user-info')
+  async changeUserInfo(@Body() dto: ChangeUserInfoDto) {
+    return await this.userService.changeUserInfo(dto);
+  }
+
+  @Get('user-info')
+  async getUserInfo(@Query('id') userId: string) {
+    return await this.userService.getUserInfo(userId);
   }
 }
