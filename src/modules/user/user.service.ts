@@ -8,6 +8,7 @@ import { filter } from 'rxjs';
 import { IChangePasswordPayload } from './models/change-password.model';
 import { UserInfo, UserInfoDocument } from './models/user-info.model';
 import { ChangeUserInfoDto } from './dto/change-user-info.dto';
+import { IUserInfo } from './types/user-info.type';
 
 @Injectable()
 export class UserService {
@@ -73,7 +74,7 @@ export class UserService {
 
   public async changeUserInfo(dto: ChangeUserInfoDto) {
     const { id, fullName, phoneNumber } = dto;
-    const userInfo = await this.getUserInfo(id);
+    const userInfo = await this.userInfoModel.findOne({ user: id }).exec();
     userInfo.fullName = fullName;
     userInfo.phoneNumber = phoneNumber;
     const newUserInfo = await userInfo.save();
@@ -81,6 +82,18 @@ export class UserService {
   }
 
   public async getUserInfo(userId: string) {
-    return this.userInfoModel.findOne({ user: userId }).exec();
+    const info = await this.userInfoModel
+      .findOne({ user: userId })
+      .populate('user')
+      .exec();
+    const { fullName, phoneNumber, user } = info;
+    const userInfo: IUserInfo = {
+      fullName,
+      phoneNumber,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    };
+    return userInfo;
   }
 }
