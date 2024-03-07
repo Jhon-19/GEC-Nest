@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from './models/user.model';
@@ -9,6 +13,9 @@ import { IChangePasswordPayload } from './models/change-password.model';
 import { UserInfo, UserInfoDocument } from './models/user-info.model';
 import { ChangeUserInfoDto } from './dto/change-user-info.dto';
 import { IUserInfo } from './types/user-info.type';
+import { ChangeUserRoleDto } from './dto/change-user-role.dto';
+import { IUserItem } from './types/user-role.type';
+import { Role } from './types/role.type';
 
 @Injectable()
 export class UserService {
@@ -62,6 +69,10 @@ export class UserService {
     const newEncrypted = await this.encryptPassword(newPassword);
     const user = await this.userModel.findById(id).exec();
 
+    if (!user) {
+      throw new ServiceUnavailableException('用户不存在');
+    }
+
     const pass = await bcrypt.compare(oldPassword, user.password);
 
     if (pass) {
@@ -95,5 +106,38 @@ export class UserService {
       role: user.role,
     };
     return userInfo;
+  }
+
+  public async getAllUsers() {
+    const users = await this.userModel.find().populate('userInfo').exec();
+    const userList: IUserItem[] = [];
+    users.forEach((user) => {
+      const userItem: IUserItem = {
+        id: user.id,
+        username: user.username,
+        fullName: user.userInfo.fullName,
+        role: user.role,
+      };
+      userList.push(userItem);
+    });
+    return userList;
+  }
+
+  public async changeUserRole(dto: ChangeUserRoleDto) {
+    const { adminId, id, role } = dto;
+    const user = await this.userModel.findById(id).exec();
+    const admin = await this.userModel.findById(adminId).exec();
+
+    if (!user) {
+      throw new ServiceUnavailableException('用户不存在');
+    }
+
+    if (!admin || admin.role !== Role.ADMIN) {
+      throw new ForbiddenException('没有超级管理员权限');
+    }
+
+    user.role = role;
+    user.save();
+    return true;
   }
 }

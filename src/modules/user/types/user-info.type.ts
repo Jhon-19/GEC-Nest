@@ -1,4 +1,4 @@
-import { Role } from "./role.type";
+import { Role } from './role.type';
 
 export interface IUserInfo {
   fullName: string;

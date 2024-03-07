@@ -1,3 +1,4 @@
+import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { ChangeUserInfoDto } from './dto/change-user-info.dto';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -28,5 +29,15 @@ export class UserController {
   @Get('user-info')
   async getUserInfo(@Query('id') userId: string) {
     return await this.userService.getUserInfo(userId);
+  }
+
+  @Get()
+  async getAllUsers() {
+    return await this.userService.getAllUsers();
+  }
+
+  @Post('role-manage')
+  async changeUserRole(@Body() changeUserRole: ChangeUserRoleDto) {
+    return await this.userService.changeUserRole(changeUserRole);
   }
 }
