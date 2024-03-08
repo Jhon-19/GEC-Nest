@@ -7,3 +7,4 @@ p, staff, /, read
 p, staff, /users/*, *
 
 g, manager, staff
+g, admin, manager

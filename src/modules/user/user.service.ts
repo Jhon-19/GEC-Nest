@@ -126,13 +126,25 @@ export class UserService {
   public async changeUserRole(dto: ChangeUserRoleDto) {
     const { adminId, id, role } = dto;
     const user = await this.userModel.findById(id).exec();
-    const admin = await this.userModel.findById(adminId).exec();
 
     if (!user) {
       throw new ServiceUnavailableException('用户不存在');
     }
 
-    if (!admin || admin.role !== Role.ADMIN) {
+    const existAdmin = await this.userModel.exists({ role: Role.ADMIN }).exec();
+
+    let hasAuth = false;
+    if (existAdmin) {
+      if (existAdmin._id.toString() === adminId && role !== Role.ADMIN) {
+        hasAuth = true;
+      }
+    } else {
+      if (role === Role.ADMIN) {
+        hasAuth = true;
+      }
+    }
+
+    if (!hasAuth) {
       throw new ForbiddenException('没有超级管理员权限');
     }
 
