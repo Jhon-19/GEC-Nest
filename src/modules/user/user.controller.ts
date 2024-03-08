@@ -16,6 +16,11 @@ export class UserController {
     return await this.userService.resetPassword(dto);
   }
 
+  @Get('check-auth')
+  checkAuth() {
+    return true;
+  }
+
   @Post('change-password')
   async changePassword(@Body() changePasswordPayload: IChangePasswordPayload) {
     return await this.userService.changePassword(changePasswordPayload);
