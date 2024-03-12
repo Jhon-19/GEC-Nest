@@ -26,3 +26,7 @@ export function checkFileType(mimetype: string) {
   }
   return isAllowed;
 }
+
+export function decodeFileName(fileOriginalName) {
+  return Buffer.from(fileOriginalName, 'latin1').toString('utf-8');
+}

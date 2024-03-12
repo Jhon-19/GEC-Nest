@@ -6,7 +6,11 @@ import {
 import { FileDto } from './dto/file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import * as fs from 'node:fs/promises';
-import { parseOriginalFileName, renameFile } from '../utils/file.util';
+import {
+  decodeFileName,
+  parseOriginalFileName,
+  renameFile,
+} from '../utils/file.util';
 import { join } from 'node:path';
 import { FOLDER } from 'src/constants/resources';
 import { FILE } from 'node:dns';
@@ -48,7 +52,7 @@ export class FileService {
   }
 
   async createOne(folderPath, file: EMFile) {
-    const fileName = file.originalname;
+    const fileName = decodeFileName(file.originalname);
     const fileData = file.buffer;
 
     const filePath = this.getRenamedFilePath(folderPath, fileName);
