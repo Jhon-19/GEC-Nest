@@ -17,7 +17,7 @@ export class FolderService {
   async create(folderDto: FolderDto) {
     const { folder } = folderDto;
     const folderPath = getFolderPath(folder);
-    if (existsFileOrFolder(folderPath, FOLDER)) {
+    if (await existsFileOrFolder(folderPath, FOLDER)) {
       throw new ServiceUnavailableException('文件夹已存在');
     }
     await createFolder(folderPath);
@@ -44,7 +44,7 @@ export class FolderService {
   async remove(folderDto: FolderDto) {
     const { folder } = folderDto;
     const folderPath = getFolderPath(folder);
-    if (!existsFileOrFolder(folderPath, FOLDER)) {
+    if (!(await existsFileOrFolder(folderPath, FOLDER))) {
       throw new ServiceUnavailableException('文件夹不存在');
     }
     await fse.remove(folderPath);
