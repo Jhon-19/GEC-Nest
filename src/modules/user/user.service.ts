@@ -5,17 +5,16 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { User, UserDocument } from './models/user.model';
 import { FilterQuery, Model } from 'mongoose';
+import { ChangeUserInfoDto } from './dto/change-user-info.dto';
+import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { filter } from 'rxjs';
 import { IChangePasswordPayload } from './models/change-password.model';
 import { UserInfo, UserInfoDocument } from './models/user-info.model';
-import { ChangeUserInfoDto } from './dto/change-user-info.dto';
-import { IUserInfo } from './types/user-info.type';
-import { ChangeUserRoleDto } from './dto/change-user-role.dto';
-import { IUserItem } from './types/user-role.type';
+import { User, UserDocument } from './models/user.model';
 import { Role } from './types/role.type';
+import { IUserInfo } from './types/user-info.type';
+import { IUserItem } from './types/user-role.type';
 
 @Injectable()
 export class UserService {

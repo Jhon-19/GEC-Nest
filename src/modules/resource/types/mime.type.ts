@@ -3,5 +3,5 @@ export enum MimeType {
   'docx' = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'pdf' = 'application/pdf',
   'zip' = 'application/zip',
-  'rar' = 'application/rar',
+  'rar' = 'application/vnd.rar',
 }
