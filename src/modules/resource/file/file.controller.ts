@@ -1,26 +1,24 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
-  UploadedFiles,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
   Res,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
-import { FileService } from './file.service';
-import { UpdateFileDto } from './dto/update-file.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { SkipAuth } from 'src/decorators/skip-auth.decorator';
-import { AppConfigService } from 'src/shared/services/app-config.service';
-import { FileDto } from './dto/file.dto';
 import { Response } from 'express';
+import { AppConfigService } from 'src/shared/services/app-config.service';
 import { EMFile } from '../types/file.type';
+import { FileDto } from './dto/file.dto';
+import { UpdateFileDto } from './dto/update-file.dto';
+import { FileService } from './file.service';
 
-@SkipAuth()
 @Controller('file')
 export class FileController {
   constructor(

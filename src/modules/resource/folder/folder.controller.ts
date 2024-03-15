@@ -1,10 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Delete } from '@nestjs/common';
-import { FolderService } from './folder.service';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { FolderDto } from './dto/folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
-import { SkipAuth } from 'src/decorators/skip-auth.decorator';
+import { FolderService } from './folder.service';
 
-@SkipAuth()
 @Controller('folder')
 export class FolderController {
   constructor(private readonly folderService: FolderService) {}
