@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppConfigService } from './shared/services/app-config.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { ResourceModule } from './modules/resource/resource.module';
+import { KgModule } from './modules/kg/kg.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ResourceModule } from './modules/resource/resource.module';
     AuthModule,
     UserModule,
     ResourceModule,
+    KgModule,
   ],
   controllers: [AppController],
   providers: [AppService],

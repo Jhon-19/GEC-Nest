@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
+import { Neo4jConfig } from '@nhogs/nestjs-neo4j';
 import { isNil } from 'lodash';
 import { join } from 'path';
 import { ResourcesOptions } from 'src/modules/resource/models/option.model';
@@ -66,6 +67,10 @@ export class AppConfigService {
     const fileSizeStr = this.get('resources.fileSize');
     const fileSize = parseFileSize(fileSizeStr);
     return { defaultFolder, fileSize };
+  }
+
+  get neo4jConfig(): Neo4jConfig {
+    return this.get('neo4j');
   }
 
   /**

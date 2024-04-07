@@ -1,5 +1,7 @@
 p, staff, /users/*, *
 p, staff, /resource/*, *
+p, staff, /kg/*, *
+p, staff, /kg, *
 
 g, manager, staff
 g, admin, manager

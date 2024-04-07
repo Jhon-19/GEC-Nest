@@ -20,3 +20,11 @@ resources:
   staticPath: /static
   defaultFolder: resources
   fileSize: 100M
+
+neo4j:
+  scheme: neo4j
+  host: localhost
+  port: 7687
+  database: neo4j
+  username: neo4j
+  password: zl08252000
